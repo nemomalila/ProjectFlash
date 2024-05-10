@@ -50,3 +50,42 @@ print([[
 /_____/  \____/   /_/ |_|  /_/  |_|/_/ |_|
 
 ]])
+
+-- Function to calculate the distance between two positions
+local function calculateDistance(position1, position2)
+    return (position1 - position2).magnitude
+end
+
+-- Function to teleport players within 100 meters of you
+local function teleportNearbyPlayers()
+    local localPlayer = game:GetService("Players").LocalPlayer
+    local localPlayerPosition = localPlayer.Character and localPlayer.Character:GetPrimaryPartCFrame().Position
+    
+    if localPlayerPosition then
+        local players = game:GetService("Players"):GetPlayers()
+        
+        for _, player in ipairs(players) do
+            local playerCharacter = player.Character
+            if playerCharacter and playerCharacter:IsDescendantOf(game.Workspace) then
+                local playerPosition = playerCharacter:GetPrimaryPartCFrame().Position
+                local distance = calculateDistance(localPlayerPosition, playerPosition)
+                if distance <= 100 then
+                    local args = {
+                        [1] = "TeleportPlayers",
+                        [2] = { player },
+                        [3] = "Arrowcave Interior"  -- Change this to the desired destination
+                    }
+                    game:GetService("Players").LocalPlayer.Character.Speedster.Remote:FireServer(unpack(args))
+                end
+            end
+        end
+    end
+end
+
+-- Bind the function to the left alt key press event
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.LeftAlt then
+        teleportNearbyPlayers()
+    end
+end)
+
