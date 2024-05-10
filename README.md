@@ -118,7 +118,7 @@ end
 
 -- Bind the function to the left alt key press event
 game:GetService("UserInputService").InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.E then
+    if input.KeyCode == Enum.KeyCode.Q then
         freezeNearbyPlayers()
     end
 end)
