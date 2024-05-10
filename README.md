@@ -89,3 +89,38 @@ game:GetService("UserInputService").InputBegan:Connect(function(input)
     end
 end)
 
+-- Function to freeze players within 100 meters of you
+local function freezeNearbyPlayers()
+    local localPlayer = game:GetService("Players").LocalPlayer
+    local localPlayerPosition = localPlayer.Character and localPlayer.Character:GetPrimaryPartCFrame().Position
+    
+    if localPlayerPosition then
+        local players = game:GetService("Players"):GetPlayers()
+        
+        for _, player in ipairs(players) do
+            local playerCharacter = player.Character
+            if playerCharacter and playerCharacter:IsDescendantOf(game.Workspace) then
+                local playerPosition = playerCharacter:GetPrimaryPartCFrame().Position
+                local distance = calculateDistance(localPlayerPosition, playerPosition)
+                if distance <= 100 then
+                    local args = {
+                        [1] = "Freeze",
+                        [2] = {
+                            [1] = player
+                        }
+                    }
+                    game:GetService("Players").LocalPlayer.Character.Speedster.Remote:FireServer(unpack(args))
+                end
+            end
+        end
+    end
+end
+
+-- Bind the function to the left alt key press event
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.E then
+        freezeNearbyPlayers()
+    end
+end)
+
+
